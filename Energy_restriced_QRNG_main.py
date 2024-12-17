@@ -370,8 +370,8 @@ def Shannon_Entropy(nX,nB,nK,m,t,w,pbxy,omega,monomials,gamma_matrix_els,nXstar,
     tau = [ w[i]/(t[i]*np.log(2.0)) for i in range(m) ]
     H_out = sum([ w[i]/(t[i]*np.log(2.0)) for i in range(m) ])
     
-    [w_R,w_B,w_P] = monomials
-    [G_new,map_table,S,list_of_eq_indices,Mexp] = gamma_matrix_els
+    [w_R,w_B,w_P] = monomials # List of monomials to build the hierarhcy: w_R (states), w_B (measuremetns) and w_P (photon-number projectors)
+    [G_new,map_table,S,list_of_eq_indices,Mexp] = gamma_matrix_els # Elements that define the hierarchy
     if type_cts == 'avg_energy' and n_trunc > nK:
         return 'ERROR: n_trunc must be lower or equal than nK'
     
@@ -394,18 +394,18 @@ def Shannon_Entropy(nX,nB,nK,m,t,w,pbxy,omega,monomials,gamma_matrix_els,nXstar,
                 z_var[o][s] = {}
                 h_var[o][s] = {}
                 for u in range(nYstar):
-                    z_var[o][s][u] = cp.Variable(nonpos=True)
-                    h_var[o][s][u] = cp.Variable(nonneg=True)
+                    z_var[o][s][u] = cp.Variable(nonpos=True) # This scalar variable represents z from Z=z*id
+                    h_var[o][s][u] = cp.Variable(nonneg=True) # This scalar variable represents \eta from ZZ=\eta*id
     
-        G_var_vec = {}
+        G_var_vec = {} # This vector contains all variable sof the form Tr[uv] (no Z)
         for element in list_of_eq_indices:
             if element == map_table[-1][-1]:
                 G_var_vec[element] = 0.0 # Zeros form orthogonal projectors
             else:
                 G_var_vec[element] = cp.Variable()
             
-        zG_var_vec = {}
-        hG_var_vec = {}
+        zG_var_vec = {} # This vector contains all variables of the form Tr[Z uv] (only a single Z)
+        hG_var_vec = {} # This vector contains all variables of the form Tr[ZZ uv] (two Z)
         for b in range(nB):
             zG_var_vec[b] = {}
             hG_var_vec[b] = {}
@@ -426,6 +426,8 @@ def Shannon_Entropy(nX,nB,nK,m,t,w,pbxy,omega,monomials,gamma_matrix_els,nXstar,
         #--------------------------------------------------#
         #                  BUILD MATRICES                  #
         #--------------------------------------------------#
+
+        # Use the matrix "G_new" which indicates which elements are equivalent in the moment matrix.
         
         string = f'Building matrices...'
         print('\r'+' '*len(string)*4+'\r', end='')
@@ -589,17 +591,19 @@ def Shannon_Entropy(nX,nB,nK,m,t,w,pbxy,omega,monomials,gamma_matrix_els,nXstar,
         print('\r'+' '*len(string)*2+'\r', end='')
         string = f'Generating constraints [positivity]...'
         print('\r'+string+'\r', end='')    
-        tol = 1e-8
+        
+        tol = 1e-8 # Numerical tolerance for positive-semidefinite constaints
+        
         # Positivity of tracial matrices and localising matrices
         for b in range(nB):
             for s in range(nXstar):
                 for u in range(nYstar):
-                        
-                    ct += [zG[b][s][u] << tol*np.identity(len(G_new))] # uncomment if the result is not tight
+                    # Negativity of Tr[Z uv] matrices    
+                    ct += [zG[b][s][u] << tol*np.identity(len(G_new))] 
                      
                     Gamma = cp.bmat([[ G         ,zG[b][s][u]],
                                      [zG[b][s][u],hG[b][s][u]] ])
-                    ct += [Gamma >> -tol*np.identity(len(G_new)*2)]
+                    ct += [Gamma >> -tol*np.identity(len(G_new)*2)] # Positivity of moment matrix
                     
         print('\r'+' '*len(string)*2+'\r', end='')
         string = f'Generating constraints [other]...'
@@ -645,7 +649,7 @@ def Shannon_Entropy(nX,nB,nK,m,t,w,pbxy,omega,monomials,gamma_matrix_els,nXstar,
         else:
             return 'ERROR: type_cts not recognised'
         
-        # Witness or full distribution
+        # Witness or full distribution (if input W is None, it is assumed that the full distribution is used)
         if W == None:
             ct += [ G_var_vec[fmap(map_table,[w_R[x],w_B[y][b]])] == pbxy[b][x][y] for b in range(nB) for x in range(nX) for y in range(nY)]
         else:
