@@ -14,6 +14,7 @@ import numpy as np
 import cvxpy as cp
 from cvxpy import *
 import time
+import math
 import chaospy # Needed for Gauss-Radau quadrature weigths and nodes
 import scipy.special as sps # used to compute error function
 # to integrate
@@ -52,8 +53,8 @@ def BPKS_probs(nB,nX,nY,amp,y1):
     
     y0 = 0.0 # Offset of the binnings in the X quadrature
     if y1 == None:
-        y1 = np.sqrt(2.0)*np.abs(amp[0]) - sps.erfinv(0.5*(np.math.erf(np.sqrt(2.0)*np.abs(amp[0])-y0) -1.0 )) # Binnings in the X quadrature
-    pbxy = np.zeros((nB,nX,nY))
+        y1 = np.sqrt(2.0)*np.abs(amp[0]) - sps.erfinv(0.5*(math.erf(np.sqrt(2.0)*np.abs(amp[0])-y0) -1.0 )) # Binnings in the X quadrature
+        pbxy = np.zeros((nB,nX,nY))
     if nB == 2: # 2 bins
             
         for x in range(nX):
@@ -100,9 +101,9 @@ def p_alpha(alpha,y,z):
     """ Probaiblity of finding a photon in the X quadrature interval x={y,z} from a coherent state |alpha >  """
     alpha = np.real(alpha)
     if y == '-Inf' and z != 'Inf':
-        return 0.5*(1.0 - np.math.erf(np.sqrt(2.0)*alpha - z))
+        return 0.5*(1.0 - math.erf(np.sqrt(2.0)*alpha - z))
     elif y != '-Inf' and z == 'Inf':
-        return 0.5*(np.math.erf(np.sqrt(2.0)*alpha - y) + 1.0)
+        return 0.5*(math.erf(np.sqrt(2.0)*alpha - y) + 1.0)
     elif y == 'Inf' and z == 'Inf':
         return 1.0
     else:
@@ -114,8 +115,8 @@ def p_alpha_hetero(alpha,x0,xf,y0,yf):
     alphaR = np.real(alpha)
     alphaI = np.imag(alpha)
     
-    xs = ( np.math.erf(np.sqrt(2.0)*alphaR - x0) - np.math.erf(np.sqrt(2.0)*alphaR - xf))
-    ys = ( np.math.erf(np.sqrt(2.0)*alphaI - y0) - np.math.erf(np.sqrt(2.0)*alphaI - yf))
+    xs = ( math.erf(np.sqrt(2.0)*alphaR - x0) - math.erf(np.sqrt(2.0)*alphaR - xf))
+    ys = ( math.erf(np.sqrt(2.0)*alphaI - y0) - math.erf(np.sqrt(2.0)*alphaI - yf))
     
     return 0.25*xs*ys
 
@@ -145,7 +146,7 @@ def p_no_click(alpha):
     return np.exp(-np.abs(alpha)**2.0)
 
 def p_alpha_nphotons(alpha,n):
-    return (np.exp(-np.abs(alpha)**2.0))*(np.abs(alpha)**(2.0*(n)))/np.math.factorial(n) 
+    return (np.exp(-np.abs(alpha)**2.0))*(np.abs(alpha)**(2.0*(n)))/math.factorial(n)
 
 #------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------
