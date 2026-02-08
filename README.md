@@ -20,7 +20,7 @@ for reproducibility:
 - scipy ~= 1.8
 - cvxpy ~= 1.3
 - chaospy ~= 4.3
-- MoMPy (install via pip)
+- MoMPy = 0.10
 
 ### Option A: pip + venv (Windows / macOS / Linux)
 
