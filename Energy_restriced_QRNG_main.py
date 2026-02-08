@@ -27,6 +27,10 @@ from MoMPy.MoM import *
 
 import warnings
 warnings.filterwarnings("ignore")
+
+# Compatibility shim for NumPy 2.x where np.math was removed.
+if not hasattr(np, "math"):
+    np.math = math
 ''' ------------------------------'''
 
 '''
