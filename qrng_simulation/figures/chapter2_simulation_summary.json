@@ -1,0 +1,30 @@
+{
+  "a_link": {
+    "cmrr_db": [
+      50.0,
+      45.0,
+      40.0,
+      35.0,
+      30.0
+    ],
+    "worst_case_hmin_bits_per_12bit_sample": [
+      8.735477824148859,
+      8.725883211482092,
+      8.69658611468822,
+      8.60406468824458,
+      8.318024816478365
+    ],
+    "worst_case_point": {
+      "cmrr_db": 30.0,
+      "hmin": 8.318024816478365
+    },
+    "recommended_output_bits_per_1024bit_block": 340
+  },
+  "b_link": {
+    "mean_abs_interchannel_corr": 0.003959957050160183,
+    "max_abs_interchannel_corr": 0.010450495942978574,
+    "acf_lag_1": 0.0986136452168641,
+    "acf_lag_8": 0.007516770093420952,
+    "acf_lag_64": -0.00559873080155853
+  }
+}
