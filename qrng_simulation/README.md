@@ -139,4 +139,4 @@ By default, generated figures and summary files are written to:
 figures/
 ```
 
-The committed files in `figures/` are reference outputs generated from the current scripts. They can be regenerated locally with `scripts/run_all_simulations.py`.
+The `figures/` directory is kept in the repository as the default output location. Its contents can be generated locally with `scripts/run_all_simulations.py`.

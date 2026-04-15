@@ -2,3 +2,7 @@ __pycache__/
 *.pyc
 *.pyo
 local_test_output/
+figures/*.png
+figures/*.svg
+figures/*.json
+!figures/.gitkeep
